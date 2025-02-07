@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "comment":""
+    "dev": "nodemon -r dotenv/config src/index.js",
+    "comment": "this -r flags require flag which tells nodemon to prelaod dotenv/config as src/index.js needs it(process.env.MONGODBURI,PORT..etc)."
   },
   "keywords": [
     "Javscript",
@@ -15,7 +15,17 @@
   "author": "Shiv Patel",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.1.9",
-    "comment":"nodemon is used to run index file (server entry point file) again when changes is done by running npm run dev "
+    "nodemon": "^3.1.9"
+  },
+  "comment": "nodemon is used to run index file (server entry point file) again when changes is done by running npm run dev ",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "mongoose-aggregate-paginate-v2": "^1.1.3"
   }
 }
