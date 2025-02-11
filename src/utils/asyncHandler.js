@@ -1,6 +1,6 @@
-//this is template for all asynchronous routehandling function to handle error if occured.
-const asynHandler=(requestHandler)=>{
-    return (req,res,next)=>{
+//this is template for all asynchronous routehandling function to handle error if occured  and no need to write promises and try catch each time.
+const asyncHandler=(requestHandler)=>{
+    return  (req,res,next)=>{
         Promise
         .resolve(requestHandler(req,res,next))
         .catch((err)=>{
@@ -8,8 +8,7 @@ const asynHandler=(requestHandler)=>{
         })
     }
 }
-
-export {asynHandler}
+export {asyncHandler}
 //-------------------------------------------------OR-------------------------------------------------
 
 //Try Catch type

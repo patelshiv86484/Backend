@@ -1,10 +1,9 @@
 import dbconnection from "./db/index.js"
 import express from "express"
+import {app} from "./app.js"
 // dotenv.config({     //this is not required as this scirpt in package.json (-r dotenv/config) preloads environment variable in process.env from .env file befor script runs.
-//     path:'/.env'
+// path:'/.env'
 // })
-
-const app=express();
 
 dbconnection().
 then(()=>{
