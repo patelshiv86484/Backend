@@ -1,4 +1,5 @@
-//this is template for all asynchronous routehandling function to handle error if occured  and no need to write promises and try catch each time.
+//this is template for all asynchronous route handling function to handle error if occured  and no need to write promises and try catch each time.
+//this is wrapaper for controller's.
 const asyncHandler=(requestHandler)=>{
     return  (req,res,next)=>{
         Promise

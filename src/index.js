@@ -1,6 +1,6 @@
 import dbconnection from "./db/index.js"
 import express from "express"
-import {app} from "./app.js"
+import {app} from "./app.js"//not to do re-declaration as const app=express()  here as all will create their own context and middleware's like app.use(json()) is not applied in all so keep universal app variable of express() only.
 // dotenv.config({     //this is not required as this scirpt in package.json (-r dotenv/config) preloads environment variable in process.env from .env file befor script runs.
 // path:'/.env'
 // })
