@@ -15,8 +15,10 @@ const userRegister=asyncHandler( async (req,res)=>{
       //8. Check fo user creation.
       //9. return response.
 
-
+                                       
       //1
+      // console.log("Displaying req.body")
+      // console.log(req.body)
       const {fullName,email,userName,password}=req.body  
       console.log("E-mail: ",email)
       //2
@@ -28,40 +30,44 @@ const userRegister=asyncHandler( async (req,res)=>{
          throw new ApiError(400,"All fields are required")
 } 
       //3
-      const existedUser=User.findOne({
+      const existedUser=await User.findOne({
             $or:[{userName},{email}]//this to check if userName is there or email is there then throw error.
       })
       if(existedUser){
             throw new ApiError(409,"User with this userName or Email exist")
       }
-     
+      // console.log("Displaying req.files")
+      // console.log(req.files)
       //4
       const avatarLocalpath=req.files?.avatar[0]?.path;//giving local file path stored on public/temp before uploading itto cloudinary
-      const coverImageLocalpath=req.files?.coverImage[0]?.path;//giving local file path stored on public/temp before uploading itto cloudinary
-      
+      // const coverImageLocalPath=req.files?.coverImage[0]?.path;//giving local file path stored on public/temp before uploading itto cloudinary
+      let coverImageLocalPath;
+      if(req.files && Array.isArray(req.files.coverImage)&& req.files.coverImage.length >0 ){
+            coverImageLocalPath=req.files.coverImage[0].path
+      }
       if(!avatarLocalpath){
             throw new ApiError(404,"Avatar file is required")
       }
       
       //5
-      const avatar=uploadOnCloudinary(avatarLocalpath)
-      const coverImage=uploadOnCloudinary(coverImageLocalpath)
- 
+      const avatar=   await uploadOnCloudinary(avatarLocalpath)
+      const coverImage=await uploadOnCloudinary(coverImageLocalPath)
+     
       if(!avatar){
             throw new ApiError(404,"Avatar file is required")
       }
       
       //6
-      const user=await User.create({    //for this only here async keyword is added.Here in respone object with added _id is return as object is created succesfully with unique id.
+      const user=await User.create({   
             fullName,
             email,
             userName:userName.toLowerCase(),
             password,
             avatar:avatar.url, //as cloudinary will return whole response object we have to extract .url from it.
-            coverImage:coverImage.url || "",//as this is not required field in user.model.js
+            coverImage:coverImage?.url || "",//as this is not required field in user.model.js
       })
 
-      const createdUser=await user.findById(user._id).select(
+      const createdUser=await User.findById(user._id).select(
             "-password -refreshToken"//this means not to select(send) password and refreshToken in response.
       )
       if(!createdUser){

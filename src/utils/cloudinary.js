@@ -12,11 +12,10 @@ async function  uploadOnCloudinary(filePath){//this filePath comes from our loca
        const response= await cloudinary.uploader.upload(filePath, {
         resource_type:"auto",//.png,.pdf.png,etc...
     })
-    fs.unlinkSync(filePath)//to clear file  temporarily  stored on server local storage for production grade approach.
-    console.log(response)
+    fs.unlinkSync(filePath)//if keeping in catch or finally block gives us error
     return response;
-    } catch (error) {
-        fs.unlinkSync(filePath)//to clear file  temporarily  stored on server local storage for production grade approach.
+    } 
+    catch (error) {
         return null;
     }
 }
