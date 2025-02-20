@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
       cb(null, "./public/temp")//store passed file in argument to this path folder.
     },
     filename: function (req, file, cb) {
-        console.log(file);
+        // console.log(file);
       cb(null, file.originalname )
     }
   })
