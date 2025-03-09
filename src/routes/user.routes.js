@@ -1,6 +1,7 @@
 import { Router } from "express";
-import {userRegister} from "../controllers/user.controller.js";
+import {userRegister,loginUser,logoutUser} from "../controllers/user.controller.js";
 import {upload} from "../middlewares/multer.middleware.js"
+import {verifyJWT} from "../middlewares/auth.middleware.js"
 const router=Router()
 
 router.route("/register").post(
@@ -15,5 +16,7 @@ router.route("/register").post(
         }
     ])
     ,userRegister)//this will seen in url as "/api/v1/users/register" it is like app.post("url",controller(userRegister)).
-
+    
+    router.route("/login").post(loginUser)
+    router.route("/logout").post(verifyJWT,logoutUser);
     export default router;
