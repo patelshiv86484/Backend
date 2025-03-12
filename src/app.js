@@ -12,7 +12,7 @@ app.use(cors({
 app.use(express.json({limit:"16kb"}));//use this for REST APIs receiving JSON.
 app.use(express.urlencoded({extended:true,limit:"16kb"}));//use this for handling HTML forms.
 app.use(express.static("public"))//store favicon and files folder in public(local storage).
-app.use(cookieParser());//this will allow user and server to perform CRUD operation on cookies in user browser.
+app.use(cookieParser());//this will allow user and server to perform CRUD operation on cookies in user browser and allows to use .cookie().
 
 //routes import
 import userRouter from "./routes/user.routes.js"

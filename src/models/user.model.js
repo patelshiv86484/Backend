@@ -63,6 +63,7 @@ userSchema.methods.generateAccessToken=function(){
     return jwt.sign(
         {//this is payload(data)  to be encrypted
             _id:this._id,
+            email: this.email,
             userName:this.userName,
             fullName:this.fullName
         },

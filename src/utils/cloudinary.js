@@ -16,6 +16,7 @@ async function  uploadOnCloudinary(filePath){//this filePath comes from our loca
     return response;
     } 
     catch (error) {
+        // fs.unlinkSync(filePath)
         return null;
     }
 }
