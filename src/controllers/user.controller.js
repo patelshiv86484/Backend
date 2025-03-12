@@ -4,7 +4,7 @@ import{User} from "../models/user.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
-const generateAccessAndRefereshTokens=async (user)=>{
+const generateAccessAndRefereshTokens=async (user)=>{ 
 
     try {  
       const accessToken =user.generateAccessToken();
@@ -18,7 +18,7 @@ const generateAccessAndRefereshTokens=async (user)=>{
   }
 
 }
-const userRegister=asyncHandler( async (req,res)=>{
+const userRegister=asyncHandler( async (req,res)=>{ 
       //Algorithm to register user
       //1. Get user details from frontend.
       //2. Validate getted data(not empty).
@@ -74,7 +74,7 @@ const userRegister=asyncHandler( async (req,res)=>{
       }
       
       //6
-      const user=await User.create({   
+      const user=await User.create({    
             fullName,
             email,
             userName:userName.toLowerCase(),
@@ -96,7 +96,7 @@ const userRegister=asyncHandler( async (req,res)=>{
                );
 })
 
-const loginUser=asyncHandler(async(req,res)=>{
+const loginUser=asyncHandler(async(req,res)=>{ 
       //Algorithm for Login user
       //1.User data from <-req.body
       //2.Check for email or username exist or not.
@@ -147,7 +147,7 @@ const loginUser=asyncHandler(async(req,res)=>{
       )
 })
  
-const logoutUser=asyncHandler(async(req,res)=>{
+const logoutUser=asyncHandler(async(req,res)=>{ 
       //Algorithm
       //1.get user data from req.user(auth.middleware.js)
       //2.Remove refreshtoken from user.
@@ -173,7 +173,7 @@ const logoutUser=asyncHandler(async(req,res)=>{
             .json(new ApiResponse(202,{},"Logged out succesfully"));
 })
 
-const refreshAccessToken=asyncHandler(async(req,res)=>{
+const refreshAccessToken=asyncHandler(async(req,res)=>{  
       //Algorithm
       //1.verify incomingrefresh token with DB stored refreshtoken.
       //2.If correct then genrate new access and refresh token and pass it in cookies.

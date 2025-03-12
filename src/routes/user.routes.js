@@ -18,7 +18,6 @@ const router=Router()
     ,userRegister)//this will seen in url as "/api/v1/users/register" it is like app.post("url",controller(userRegister)).
     
     router.route("/login").post(loginUser)
-
     //Secured
 
     router.route("/logout").post(verifyJWT,logoutUser);
