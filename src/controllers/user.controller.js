@@ -174,6 +174,7 @@ const logoutUser=asyncHandler(async(req,res)=>{
 })
 
 const refreshAccessToken=asyncHandler(async(req,res)=>{  
+      
       //Algorithm
       //1.verify incomingrefresh token with DB stored refreshtoken.
       //2.If correct then genrate new access and refresh token and pass it in cookies.
@@ -183,9 +184,11 @@ const refreshAccessToken=asyncHandler(async(req,res)=>{
       }
       try {
             const decodedRefreshToken=jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET);
-            const user=User.findById(decodedRefreshToken?._id) 
+            console.log(decodedRefreshToken)
+            const user=await User.findById(decodedRefreshToken?._id) 
             if(!user) throw new ApiError(404,"Invalid Refresh Token")
-            if(incomingRefreshToken!==user?.refreshToken) throw new ApiError(402,"Refresh roken is expired")//is using old refresh token in which user id is stored to verify is refres toke same as in databse or diffrent.
+                  console.log(user);
+            if(incomingRefreshToken!==user.refreshToken) throw new ApiError(402,"Refresh roken is expired")//is using old refresh token in which user id is stored to verify is refres toke same as in databse or diffrent.
             const {accessToken,refreshToken} =generateAccessAndRefereshTokens(user)
             const options={
                   httpOnly:true,
@@ -193,8 +196,8 @@ const refreshAccessToken=asyncHandler(async(req,res)=>{
             }
       
             return res.status(201)
-            .cookies("accessToken",accessToken,options)
-            .cookies("refreshToken",refreshToken,options)
+            .cookie("accessToken",accessToken,options)
+            .cookie("refreshToken",refreshToken,options)
             .json(
                   new ApiResponse(200,{refreshToken,accessToken})
             )
