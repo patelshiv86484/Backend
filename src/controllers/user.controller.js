@@ -4,8 +4,7 @@ import{User} from "../models/user.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
-
-
+import mongoose from "mongoose"
 const generateAccessAndRefereshTokens=async (user)=>{ 
 
     try {  
@@ -20,7 +19,6 @@ const generateAccessAndRefereshTokens=async (user)=>{
   }
 
 }
-
 const userRegister=asyncHandler( async (req,res)=>{ 
       //Algorithm to register user
       //1. Get user details from frontend.
@@ -153,12 +151,12 @@ const loginUser=asyncHandler(async(req,res)=>{
 const logoutUser=asyncHandler(async(req,res)=>{ 
       //Algorithm
       //1.get user data from req.user(auth.middleware.js)
-      //2.Remove refreshtoken from user.
+      //2.Remove refreshtoken and accesstoken from user.
       await User.findByIdAndUpdate(
             req.user._id,
             {
               $unset:{
-                  refreshToken:1//removes from document strutur in mongoDB.
+                  refreshToken:1//removes from document structure in mongoDB.
                      }
             },
             {
@@ -169,7 +167,7 @@ const logoutUser=asyncHandler(async(req,res)=>{
                   httpOnly:true,
                   secure:true,
             }
-            console.log("Logged out successfully");
+            // console.log("Logged out successfully");
             res.status(201)
             .clearCookie("refreshtoken",option)//while clearing he cookie attributes (like httpOnly, secure, sameSite, path) exactly match those used when setting the cookie to ensure correct cookies are erased not other.
             .clearCookie("accesstoken",option)
@@ -330,20 +328,20 @@ const changeCurrentPassword = asyncHandler(async(req, res) => {
   })
   
   const getUserChannelProfile = asyncHandler(async(req, res) => {
-      const {username} = req.params
-  
+      const {username} = req.params//chai aur code
+
       if (!username?.trim()) {
           throw new ApiError(400, "username is missing")
       }
   
-      const channel = await User.aggregate([
+      const channel = await User.aggregate([//aggregate will add fields on user only
           {
-              $match: {
+              $match: {//filter out.Not adds any new field.
                   username: username?.toLowerCase()
               }
           },
           {
-              $lookup: {
+              $lookup: {        //join
                   from: "subscriptions",
                   localField: "_id",
                   foreignField: "channel",
@@ -376,7 +374,7 @@ const changeCurrentPassword = asyncHandler(async(req, res) => {
               }
           },
           {
-              $project: {
+              $project: {//only include this attributes in outcome
                   fullName: 1,
                   username: 1,
                   subscribersCount: 1,
@@ -401,16 +399,55 @@ const changeCurrentPassword = asyncHandler(async(req, res) => {
       )
   })
   
-  
-  export {
-    userRegister,
-    loginUser,
-    logoutUser,
-    refreshAccessToken,
-    changeCurrentPassword,
-    getCurrentUser,
-    updateAccountDetails,
-    updateUserAvatar,
-    updateUserCoverImage,
-    getUserChannelProfile,
+  const getWatchHistory=asyncHandler(async(req,res)=>{
+   const user=User.aggregate([
+   {
+      $match:{
+        _id:new mongoose.Types.ObjectId(req.user._id)//Interview question mongodb accepts ObjectId datatype id but we get it in string format so make conversion by ObjectId function call whenever used _id withoutObjectId is runned because internally it is converted by mongoose but in aggregation pipeline code is directly executed without modification.
+      }
+   },{
+      $lookup:{
+        from:"videos",
+        localField:"watchHistory",
+        foreignField:"_id",
+        as:"watchHistory",//overrides existing watchHistory
+        pipeline:[//sub-pipeline
+        {
+           $lookup:{// from videos model
+            from:"users",
+            localField:"owner",
+            foreignField:"_id",
+            as:"owner",
+            pipeline:[{//this is with respect to video model as primary and user as secondary.
+                $project:{
+                    fullName: 1,
+                    username: 1,
+                    avatar: 1,
+                }
+            }]
+           }
+        },{
+        $addFields:{//because more deeper fronetend developer have to go so giving direct owner details.this will override as:"owner" field.
+                owner:{
+                    $first:"$owner",
+                }
+            }
         }
+    ]
+      }
+   },
+   
+])
+
+return res
+.status(200)
+.json( 
+    new ApiResponse(
+    200,
+    user[0],
+    "User watch history fetched successfully"
+))
+  })
+
+  
+  export {userRegister,loginUser,logoutUser,refreshAccessToken,changeCurrentPassword,getCurrentUser,updateAccountDetails,updateUserAvatar,updateUserCoverImage,getUserChannelProfile,getWatchHistory}
