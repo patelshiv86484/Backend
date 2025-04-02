@@ -1,5 +1,6 @@
 import mongoose,{Schema} from "mongoose";
-import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";//as lots of video will be there so can't load all at once so we will use pagination to reduce the load on Database.
+
 const videoSchema=new Schema({
     videoFile:{
         type:String,//Cloudinary url
